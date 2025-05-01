@@ -31,6 +31,7 @@ struct avl_node {
 
 	template<typename ... Arg>
 	avl_node(Arg&& ... args) : data(std::forward<Arg>(args) ...) {}
+	avl_node(const avl_node &) = delete;
 };
 
 template<>

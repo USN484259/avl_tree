@@ -30,7 +30,7 @@ public:
 
 		iterator(avl_set *cont, node *p = nullptr) : container(cont), ptr(p) {}
 	public:
-		iterator(const iterator &other) : container(other.container), ptr(other.ptr) {}
+		iterator(const iterator &) = default;
 		~iterator(void) = default;
 
 		iterator& operator=(const iterator &other) {
@@ -53,20 +53,29 @@ public:
 		}
 
 		iterator& operator++(void) {
-			if (ptr)
+			if (!ptr)
 				ptr = container->tree.head_node();
 			else
 				ptr = container->tree.next_node(ptr);
 			return *this;
 		}
 		iterator& operator--(void) {
-			if (ptr)
+			if (!ptr)
 				ptr = container->tree.tail_node();
 			else
 				ptr = container->tree.prev_node(ptr);
 			return *this;
 		}
-
+		iterator operator++(int) {
+			iterator ret(*this);
+			++(*this);
+			return ret;
+		}
+		iterator operator--(int) {
+			iterator ret(*this);
+			--(*this);
+			return ret;
+		}
 	};
 	friend class iterator;
 public:
@@ -94,6 +103,15 @@ public:
 		});
 		assert(tree.empty());
 		count = 0;
+	}
+
+	iterator begin(void) {
+		node *head_node = tree.head_node();
+		return iterator(this, head_node);
+	}
+
+	iterator end(void) {
+		return iterator(this);
 	}
 
 	template<typename K, typename CMP = C>
